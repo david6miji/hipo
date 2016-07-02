@@ -42,9 +42,9 @@
 // @YYC #include <avr/interrupt.h>
 
 
-// @YYC #include "fastio.h"
+#include "fastio.h"
 #include "Configuration.h"
-// @YYC #include "pins.h"
+#include "pins.h"
 
 #ifndef SANITYCHECK_H
   #error Your Configuration.h and Configuration_adv.h files are outdated!
@@ -64,7 +64,7 @@ typedef unsigned long millis_t;
 #endif
 
 // @YYC #include "MarlinSerial.h"
-// @YYC 
+// @YYC
 // @YYC #include "WString.h"
 
 

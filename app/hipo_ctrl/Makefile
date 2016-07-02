@@ -8,25 +8,28 @@
 
 # CP_DIR          = /nfs/pool_sw
 
-## 
+##
 TARGET			 = hipo_ctrl
-SRCS			 = src/main.cpp 
-SRCS			+= src/yyc.cpp 
-SRCS			+= src/MarlinSerial.cpp
-SRCS			+= src/WString.cpp
+SRCS			 = src/main.c
+SRCS			+= src/yyc.c
+SRCS			+= src/MarlinSerial.c
+SRCS			+= src/WString.c
+SRCS			+= src/planner.c
+SRCS			+= src/stepper.c
 
 #---------------------------------------------------------------------
-## 
+##
 DIR_LIBS         = ./lib/
 
-## 
+##
 
 INCLUDE_DIRS		+= -I.
-LIB_DIRS			+= 
+LIB_DIRS			+=
 
 OBJS			= $(SRCS:.cpp=.o)
 
-CFLAGS			= $(INCLUDE_DIRS) -o -W -Wall -O2
+#
+CFLAGS			= $(INCLUDE_DIRS) -o -W  -Wall -O2
 LDFLAGS		= $(LIB_DIRS)
 LIBS		    = -lm
 
@@ -47,7 +50,7 @@ MV	= mv
 all : $(TARGET)
 
 $(TARGET) : $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $@ $(LIBS) 
+	$(CC) $(LDFLAGS) $(OBJS) -o $@ $(LIBS)
 	$(NM) $(TARGET) > $(TARGET).map
 
 %.o:%.c
@@ -55,6 +58,10 @@ $(TARGET) : $(OBJS)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 %.o:%.cc
+	@echo "C++ compiling $< ..."
+	$(CC) -c $(CFLAGS) $(CXXFLAGS) -o $@ $<
+
+%.o:%.cpp
 	@echo "C++ compiling $< ..."
 	$(CC) -c $(CFLAGS) $(CXXFLAGS) -o $@ $<
 
@@ -69,11 +76,9 @@ clean:
 	rm -f $(TARGET) core
 
 distclean: clean
-	rm -rf .depend	
+	rm -rf .depend
 
 
 ifeq (.depend,$(wildcard .depend))
 include .depend
 endif
-
-	
