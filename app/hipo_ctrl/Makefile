@@ -26,7 +26,7 @@ DIR_LIBS         = ./lib/
 INCLUDE_DIRS		+= -I.
 LIB_DIRS			+=
 
-OBJS			= $(SRCS:.cpp=.o)
+OBJS			= $(SRCS:.c=.o)
 
 #
 CFLAGS			= $(INCLUDE_DIRS) -o -W  -Wall -O2
