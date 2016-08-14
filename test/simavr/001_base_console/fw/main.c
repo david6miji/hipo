@@ -1,13 +1,3 @@
-/*
-	atmega88_uart_echo.c
-
-	This test case enables uart RX interupts, does a "printf" and then receive characters
-	via the interupt handler until it reaches a \r.
-
-	This tests the uart reception fifo system. It relies on the uart "irq" input and output
-	to be wired together (see simavr.c)
- */
-
 #include <avr/io.h>
 #include <stdio.h>
 #include <avr/interrupt.h>
