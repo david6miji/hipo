@@ -9,8 +9,7 @@ LIBS		    += -lsimavr
 LIBS		    += -lelf 
 
 LIB_DIRS		= 
-# LIB_DIRS		+= -L/tmp/simavr/tests/../simavr/obj-x86_64-linux-gnu 
-# LIB_DIRS		+= -Wl,-rpath,/tmp/simavr/tests/../simavr/obj-x86_64-linux-gnu 
+LIB_DIRS		+= -Wl,-rpath,/usr/local/lib/
 
 INCLUDE_DIRS	= 
 INCLUDE_DIRS	+= -I. 

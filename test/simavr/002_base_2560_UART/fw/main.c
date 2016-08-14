@@ -23,21 +23,23 @@
 #include <avr_mcu_section.h>
 AVR_MCU(F_CPU, "atmega2560");
 // tell simavr to listen to commands written in this (unused) register
-AVR_MCU_SIMAVR_COMMAND(&GPIOR0);
+// AVR_MCU_SIMAVR_COMMAND(&GPIOR0);
 AVR_MCU_SIMAVR_CONSOLE(&GPIOR1);
 
-/*
- * This small section tells simavr to generate a VCD trace dump with changes to these
- * registers.
- * Opening it with gtkwave will show you the data being pumped out into the data register
- * UDR0, and the UDRE0 bit being set, then cleared
- */
-const struct avr_mmcu_vcd_trace_t _mytrace[]  _MMCU_ = {
-	{ AVR_MCU_VCD_SYMBOL("UDR3"), .what = (void*)&UDR3, },
-	{ AVR_MCU_VCD_SYMBOL("UDRE3"), .mask = (1 << UDRE3), .what = (void*)&UCSR3A, },
-	{ AVR_MCU_VCD_SYMBOL("GPIOR1"), .what = (void*)&GPIOR1, },
-};
+int main()
+{
+	while(1){
+		GPIOR1 = 'A';
+		GPIOR1 = '-';
+		GPIOR1 = 'Z';
+		GPIOR1 = '\r';
+		_delay_ms(1000);
+		
+	}
+}
 
+
+/*
 volatile uint8_t cnt = 0;
 volatile uint8_t done = 0;
 
@@ -125,3 +127,6 @@ int main()
 	// this is a "feature" that allows running tests cases and exit
 	sleep_cpu();
 }
+
+*/
+
