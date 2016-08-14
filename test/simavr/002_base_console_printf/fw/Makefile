@@ -1,5 +1,5 @@
 ## 사용자 소스
-TARGET			= fw_atmega2560_uart
+TARGET			= fw_atmega2560_console_printf
 
 CROSS_PREFIX	= avr-
 #MCU_TARGET     = at90s2313
@@ -130,7 +130,8 @@ clean:
 	rm -f $(TARGET)_eeprom.hex
 	rm -f $(TARGET)_eeprom.bin
 	rm -f $(TARGET)_eeprom.srec
-	rm -f $(DIR_BIN)$(TARGET)
+	rm -f $(DIR_BIN)$(TARGET).axf
+	rm -f $(DIR_BIN)$(TARGET).hex
 
 distclean: clean
 	rm -rf .depend	

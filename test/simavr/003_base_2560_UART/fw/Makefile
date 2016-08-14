@@ -1,5 +1,5 @@
 ## 사용자 소스
-TARGET			= fw_atmega2560_console
+TARGET			= fw_atmega2560_uart
 
 CROSS_PREFIX	= avr-
 #MCU_TARGET     = at90s2313
