@@ -296,7 +296,9 @@ MAKEFILE = Makefile
 # Debugging format.
 # Native formats for AVR-GCC's -g are stabs [default], or dwarf-2.
 # AVR (extended) COFF requires stabs, plus an avr-objcopy run.
-DEBUG = stabs
+# @YYC
+# DEBUG = stabs
+DEBUG = dwarf-2
 
 OPT = s
 
@@ -333,7 +335,7 @@ CXXINCS = ${addprefix -I ,${VPATH}}
 # gnu89 - c89 plus GCC extensions
 # c99   - ISO C99 standard (not yet fully implemented)
 # gnu99 - c99 plus GCC extensions
-#CSTANDARD = -std=gnu99
+# CSTANDARD = -std=gnu99
 CDEBUG = -g$(DEBUG)
 CWARN = -Wall -Wstrict-prototypes
 CTUNING = -funsigned-char -funsigned-bitfields -fpack-struct \
@@ -345,11 +347,21 @@ endif
 #CEXTRA = -Wa,-adhlns=$(<:.c=.lst)
 CEXTRA = -fno-use-cxa-atexit
 
-CFLAGS := $(CDEBUG) $(CDEFS) $(CINCS) -O$(OPT) $(CWARN) $(CEXTRA) $(CTUNING)
-CXXFLAGS :=         $(CDEFS) $(CINCS) -O$(OPT) -Wall    $(CEXTRA) $(CTUNING)
+CFLAGS   := $(CDEBUG) $(CDEFS) $(CINCS) -O$(OPT) $(CWARN) $(CEXTRA) $(CTUNING)
+# @YYC
+#CXXFLAGS :=          $(CDEFS) $(CINCS) -O$(OPT) -Wall    $(CEXTRA) $(CTUNING)
+CXXFLAGS := $(CDEBUG) $(CDEFS) $(CINCS) -O$(OPT) -Wall    $(CEXTRA) $(CTUNING)
+
+# @YYC
+SRC += simavr_info.c
+
+CFLAGS 			+= -I/usr/local/include/simavr/avr/ 
+CFLAGS			+= --std=gnu99
+CXXFLAGS		+= --std=gnu99
+
+
 #ASFLAGS = -Wa,-adhlns=$(<:.S=.lst),-gstabs
 LDFLAGS = -lm
-
 
 # Programming support using avrdude. Settings and variables.
 AVRDUDE_PORT = $(UPLOAD_PORT)
@@ -461,7 +473,11 @@ extcoff: $(TARGET).elf
 	# Link: create ELF output file from library.
 $(BUILD_DIR)/$(TARGET).elf: $(OBJ) Configuration.h
 	$(Pecho) "  CXX   $@"
-	$P $(CC) $(ALL_CXXFLAGS) -Wl,--gc-sections -o $@ -L. $(OBJ) $(LDFLAGS)
+# @YYC	
+#	$P $(CC) $(ALL_CXXFLAGS) -Wl,--gc-sections -o $@ -L. $(OBJ) $(LDFLAGS)
+	$P $(CC) $(ALL_CXXFLAGS) -Wl,--relax,--gc-sections -Wl,--undefined=_mmcu,--section-start=.mmcu=0x910000 -o $@ -L. $(OBJ) $(LDFLAGS)
+	cp -a $@ ../bin/
+	
 
 $(BUILD_DIR)/%.o: %.c Configuration.h Configuration_adv.h $(MAKEFILE)
 	$(Pecho) "  CC    $<"

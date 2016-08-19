@@ -1,62 +1,25 @@
 ## 사용자 소스
-TARGET			= fw_atmega2560_quit
+TARGET			= fw_Marlin
 
 CROSS_PREFIX	= avr-
-#MCU_TARGET     = at90s2313
-#MCU_TARGET     = at90s2333
-#MCU_TARGET     = at90s4414
-#MCU_TARGET     = at90s4433
-#MCU_TARGET     = at90s4434
-#MCU_TARGET     = at90s8515
-#MCU_TARGET     = at90s8535
-#MCU_TARGET     = atmega128
-#MCU_TARGET     = atmega1280
-#MCU_TARGET     = atmega1281
-#MCU_TARGET     = atmega1284p
-#MCU_TARGET     = atmega16
-#MCU_TARGET     = atmega163
-#MCU_TARGET     = atmega164p
-#MCU_TARGET     = atmega165
-#MCU_TARGET     = atmega165p
-#MCU_TARGET     = atmega168
-#MCU_TARGET     = atmega169
-#MCU_TARGET     = atmega169p
 MCU_TARGET     = atmega2560
-#MCU_TARGET     = atmega2561
-#MCU_TARGET     = atmega32
-#MCU_TARGET     = atmega324p
-#MCU_TARGET     = atmega325
-#MCU_TARGET     = atmega3250
-#MCU_TARGET     = atmega329
-#MCU_TARGET     = atmega3290
-#MCU_TARGET     = atmega32u4
-#MCU_TARGET     = atmega48
-#MCU_TARGET     = atmega64
-#MCU_TARGET     = atmega640
-#MCU_TARGET     = atmega644
-#MCU_TARGET     = atmega644p
-#MCU_TARGET     = atmega645
-#MCU_TARGET     = atmega6450
-#MCU_TARGET     = atmega649
-#MCU_TARGET     = atmega6490
-#MCU_TARGET     = atmega8
-#MCU_TARGET     = atmega8515
-#MCU_TARGET     = atmega8535
-#MCU_TARGET     = atmega88
-#MCU_TARGET     = attiny2313
-#MCU_TARGET     = attiny24
-#MCU_TARGET     = attiny25
-#MCU_TARGET     = attiny26
-#MCU_TARGET     = attiny261
-#MCU_TARGET     = attiny44
-#MCU_TARGET     = attiny45
-#MCU_TARGET     = attiny461
-#MCU_TARGET     = attiny84
-#MCU_TARGET     = attiny85
-#MCU_TARGET     = attiny86
 
-SRCS			= main.c 
-SRCS			+= 
+OUT_DIR				= ./out/
+
+C_SRCS			= 
+C_SRCS			+= /usr/share/arduino/hardware/arduino/cores/arduino/wiring.c 
+C_SRCS			+= simavr_info.c
+
+
+C_OBJS			= 
+C_OBJS			+= $(OUT_DIR)wiring.o 
+C_OBJS			+= $(OUT_DIR)simavr_info.o
+
+CPP_SRCS		= 
+CPP_SRCS		+= Marlin_main.cpp
+
+CPP_OBJS		= 
+CPP_OBJS		+= $(OUT_DIR)Marlin_main.o
 
 LIBS		    = 
 
@@ -65,22 +28,40 @@ LIB_DIRS		=
 INCLUDE_DIRS	= 
 INCLUDE_DIRS	+= -I. 
 INCLUDE_DIRS	+= -I/usr/local/include/simavr/avr/
+INCLUDE_DIRS	+= -I/usr/share/arduino/hardware/arduino/cores/arduino 
+INCLUDE_DIRS	+= -I/usr/share/arduino/libraries/LiquidCrystal 
+INCLUDE_DIRS	+= -I/usr/share/arduino/libraries/SPI 
+INCLUDE_DIRS	+= -I/usr/share/arduino/hardware/arduino/variants/mega 
+
+#	-I applet 
 
 CFLAGS			= 
+# CFLAGS			+= -MMD 
 CFLAGS			+= -Wall
 CFLAGS			+= -gdwarf-2
 CFLAGS			+= -Os
-CFLAGS			+= -std=gnu99
+CFLAGS			+= --std=gnu99
 CFLAGS			+= -fno-inline-small-functions
 CFLAGS			+= -ffunction-sections -fdata-sections
-CFLAGS			+= -mmcu=$(MCU_TARGET)
-CFLAGS			+= -DF_CPU=8000000
 
+CFLAGS			+= -mmcu=$(MCU_TARGET)
+CFLAGS			+= -DF_CPU=16000000
+CFLAGS			+= -DARDUINO=105 
+CFLAGS			+= -DMOTHERBOARD=33 
+			
 LDFLAGS			= 
 LDFLAGS			+= -Wl,--relax,--gc-sections
 LDFLAGS			+= -Wl,--undefined=_mmcu,--section-start=.mmcu=0x910000
 
-OBJS			= $(SRCS:.c=.o)
+# 	-MMD 
+# 	-gstabs 
+# 	-Wstrict-prototypes 
+# 	-fno-use-cxa-atexit 
+# 	-funsigned-char 
+# 	-funsigned-bitfields 
+# 	-fpack-struct 
+# 	-fshort-enums 
+# 	-w 
 
 CC				=	$(CROSS_PREFIX)gcc
 CXX			 	=	$(CROSS_PREFIX)g++
@@ -95,16 +76,25 @@ OBJDUMP        	=	$(CROSS_PREFIX)objdump
 CP				= 	cp -a
 MV				= 	mv
 
-all: $(TARGET).axf lst text eeprom
+.SUFFIXES : .c.o
 
+all: make_out $(TARGET).axf lst text eeprom
 
-$(TARGET).axf : $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDE_DIRS) $(LDFLAGS) $(LIB_DIRS) -o $@ $^ $(LIBS)
-	$(CP) $@ $(DIR_BIN)
+make_out:
+	mkdir -p $(OUT_DIR)
+	
+$(TARGET).axf : $(C_OBJS) $(CPP_OBJS)
+#	$(CC) $(CFLAGS) $(INCLUDE_DIRS) $(LDFLAGS) $(LIB_DIRS) -o $@ $^ $(LIBS)
+#	$(CP) $@ $(DIR_BIN)
 
-%.o:%.c
+	
+$(C_OBJS):$(C_SRCS)
 	@echo "Compiling $< ..."
-	$(CC) -c $(CFLAGS) $(INCLUDE_DIRS) -o $(OUT)$@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDE_DIRS) -o $@ $<
+	
+$(CPP_OBJS):$(CPP_SRCS)
+	@echo "Compiling $< ..."
+	$(CC) -c $(CFLAGS) $(INCLUDE_DIRS) -o $@ $<
 
 lst:  $(TARGET).lst
 	
@@ -115,6 +105,7 @@ dep :
 	$(CC) -M $(INCLUDE_DIRS) $(SRCS) > .depend
 	
 clean:
+	rm -rf ./out
 	rm -f *.bak
 	rm -f *.map
 	rm -f *.o

@@ -61,6 +61,39 @@
 #include <SPI.h>
 #endif
 
+/*
+// #include <avr_mcu_section.h>
+// 
+// struct avr_mmcu_string_t_E {
+// 	uint8_t tag;
+// 	uint8_t len;
+// 	char string[];
+// } __attribute__((__packed__));
+// 
+// #define AVR_MCU_STRING_E(_tag, _str) \
+// 	const struct avr_mmcu_string_t _##_tag _MMCU_ = {\
+// 		.tag = _tag,\
+// 		.len = sizeof(_str),\
+// 	}
+// //		.string = _str,
+// 
+// const struct avr_mmcu_string_t_E test_str = {\
+// 	.tag = 1,\
+// 	.len = 2,\
+// 	.string = "hello", \
+// };
+// 
+// 
+// 
+// #define AVR_MCU_E(_speed, _name) \
+// 	const uint8_t _mmcu[2] _MMCU_ = { AVR_MMCU_TAG, 0 }; \
+// 	AVR_MCU_STRING_E(AVR_MMCU_TAG_NAME, _name);
+// //	AVR_MCU_LONG(AVR_MMCU_TAG_FREQUENCY, _speed)
+// 
+// AVR_MCU_E(112, "atmega2560");
+AVR_MCU(F_CPU, "atmega2560");
+*/
+
 #define VERSION_STRING  "1.0.2"
 
 // look here for descriptions of G-codes: http://linuxcnc.org/handbook/gcode/g-code.html
