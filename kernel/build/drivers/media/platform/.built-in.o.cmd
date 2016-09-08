@@ -1,0 +1,1 @@
+cmd_drivers/media/platform/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/media/platform/built-in.o drivers/media/platform/soc_camera/built-in.o drivers/media/platform/davinci/built-in.o drivers/media/platform/mxc/output/built-in.o 

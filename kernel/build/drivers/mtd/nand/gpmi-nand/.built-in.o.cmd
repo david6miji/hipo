@@ -1,0 +1,1 @@
+cmd_drivers/mtd/nand/gpmi-nand/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/mtd/nand/gpmi-nand/built-in.o drivers/mtd/nand/gpmi-nand/gpmi_nand.o 

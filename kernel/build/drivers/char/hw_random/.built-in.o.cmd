@@ -1,0 +1,1 @@
+cmd_drivers/char/hw_random/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/char/hw_random/built-in.o drivers/char/hw_random/rng-core.o 

@@ -1,0 +1,1 @@
+cmd_drivers/net/ethernet/freescale/fec.o := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/net/ethernet/freescale/fec.o drivers/net/ethernet/freescale/fec_main.o drivers/net/ethernet/freescale/fec_ptp.o 

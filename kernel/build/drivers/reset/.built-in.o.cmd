@@ -1,0 +1,1 @@
+cmd_drivers/reset/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/reset/built-in.o drivers/reset/core.o drivers/reset/gpio-reset.o 

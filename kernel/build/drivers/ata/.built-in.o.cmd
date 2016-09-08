@@ -1,0 +1,1 @@
+cmd_drivers/ata/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/ata/built-in.o drivers/ata/libata.o drivers/ata/ahci_platform.o drivers/ata/libahci.o drivers/ata/ahci_imx.o drivers/ata/pata_imx.o 

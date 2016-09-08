@@ -1,0 +1,1 @@
+cmd_drivers/tty/serial/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/tty/serial/built-in.o drivers/tty/serial/serial_core.o drivers/tty/serial/imx.o drivers/tty/serial/fsl_lpuart.o 

@@ -1,0 +1,1 @@
+cmd_drivers/usb/chipidea/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/usb/chipidea/built-in.o drivers/usb/chipidea/ci_hdrc.o drivers/usb/chipidea/ci_hdrc_msm.o drivers/usb/chipidea/usbmisc_imx.o drivers/usb/chipidea/ci_hdrc_imx.o 

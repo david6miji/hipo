@@ -1,0 +1,1 @@
+cmd_drivers/usb/phy/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/usb/phy/built-in.o drivers/usb/phy/phy.o drivers/usb/phy/of.o drivers/usb/phy/phy-nop.o drivers/usb/phy/phy-mxs-usb.o 

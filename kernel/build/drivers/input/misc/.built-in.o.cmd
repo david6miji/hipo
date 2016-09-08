@@ -1,0 +1,1 @@
+cmd_drivers/input/misc/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/input/misc/built-in.o drivers/input/misc/mma8450.o drivers/input/misc/isl29023.o 

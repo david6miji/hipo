@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/b2c2/built-in.o :=  rm -f drivers/media/usb/b2c2/built-in.o; /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ar rcsD drivers/media/usb/b2c2/built-in.o

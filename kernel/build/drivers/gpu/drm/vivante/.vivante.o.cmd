@@ -1,0 +1,1 @@
+cmd_drivers/gpu/drm/vivante/vivante.o := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/gpu/drm/vivante/vivante.o drivers/gpu/drm/vivante/vivante_drv.o 

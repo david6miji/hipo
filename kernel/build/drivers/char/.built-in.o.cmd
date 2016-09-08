@@ -1,0 +1,1 @@
+cmd_drivers/char/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/char/built-in.o drivers/char/mem.o drivers/char/random.o drivers/char/misc.o drivers/char/fsl_otp.o drivers/char/hw_random/built-in.o drivers/char/mxs_viim.o drivers/char/imx_mcc/built-in.o 

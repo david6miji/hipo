@@ -1,0 +1,1 @@
+cmd_drivers/power/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/power/built-in.o drivers/power/power_supply.o drivers/power/sabresd_battery.o drivers/power/imx6_usb_charger.o 
