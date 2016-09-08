@@ -1,0 +1,50 @@
+/*-----------------------------------------------------------------------------
+  file : vocoder.h
+  desc : 
+  auth : freefrug@falinux.com
+  date : 2016-07 ~
+  noty : linux 3.14 for imx6
+
+-------------------------------------------------------------------------------*/
+#ifndef _VOCODER_H_
+#define _VOCODER_H_
+
+
+#define		PROC_DIR_APSI		"apsi"
+#define		PROC_DIR_VOCODER	"ambe3000"
+
+#define 	DRIVER_NAME_VOCODER		"AMBE3000_APSI"
+#define     DRIVER_MAJOR_VOCODER	202
+
+
+
+
+#ifdef MODULE
+
+#endif
+
+#define 	DBG_MSG		if (showmsg) printk
+
+
+
+typedef struct {
+	unsigned long reg;		// 4byte unit
+	unsigned long cnt;
+	void *usr_buf;
+} burst_data_t;
+
+
+
+
+
+
+
+/* ioctl command ---------------------------------------------------------------*/
+#define		STD_DRIVER_MAJOR_KEY         'd'
+#define		IOCTL_BURST_READ             _IOR( STD_DRIVER_MAJOR_KEY, 0, int )	
+#define		IOCTL_BURST_WRITE            _IOW( STD_DRIVER_MAJOR_KEY, 1, int )	
+
+#endif  // _STD_DRIVER_H_
+
+
+
