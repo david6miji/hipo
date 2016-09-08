@@ -1,1 +1,0 @@
-cmd_drivers/hid/hid.o := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/hid/hid.o drivers/hid/hid-debug.o drivers/hid/hid-core.o drivers/hid/hid-input.o 

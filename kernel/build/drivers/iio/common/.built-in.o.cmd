@@ -1,1 +1,0 @@
-cmd_drivers/iio/common/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/iio/common/built-in.o drivers/iio/common/hid-sensors/built-in.o drivers/iio/common/st_sensors/built-in.o 

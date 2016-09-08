@@ -1,1 +1,0 @@
-cmd_drivers/mmc/card/mmc_block.o := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/mmc/card/mmc_block.o drivers/mmc/card/block.o drivers/mmc/card/queue.o 

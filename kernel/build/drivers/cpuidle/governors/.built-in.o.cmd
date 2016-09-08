@@ -1,1 +1,0 @@
-cmd_drivers/cpuidle/governors/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/cpuidle/governors/built-in.o drivers/cpuidle/governors/ladder.o drivers/cpuidle/governors/menu.o 

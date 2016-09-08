@@ -1,1 +1,0 @@
-cmd_drivers/gpu/drm/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/gpu/drm/built-in.o drivers/gpu/drm/drm.o drivers/gpu/drm/vivante/built-in.o drivers/gpu/drm/i2c/built-in.o 

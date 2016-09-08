@@ -1,1 +1,0 @@
-cmd_drivers/media/common/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/media/common/built-in.o drivers/media/common/b2c2/built-in.o drivers/media/common/saa7146/built-in.o drivers/media/common/siano/built-in.o 

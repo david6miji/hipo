@@ -1,1 +1,0 @@
-cmd_drivers/hid/built-in.o :=  /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/hid/built-in.o drivers/hid/hid.o drivers/hid/hid-generic.o drivers/hid/usbhid/built-in.o 

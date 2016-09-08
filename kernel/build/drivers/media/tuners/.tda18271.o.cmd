@@ -1,1 +1,0 @@
-cmd_drivers/media/tuners/tda18271.o := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/media/tuners/tda18271.o drivers/media/tuners/tda18271-maps.o drivers/media/tuners/tda18271-common.o drivers/media/tuners/tda18271-fe.o 

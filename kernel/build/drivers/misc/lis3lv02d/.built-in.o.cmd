@@ -1,1 +1,0 @@
-cmd_drivers/misc/lis3lv02d/built-in.o :=  rm -f drivers/misc/lis3lv02d/built-in.o; /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ar rcsD drivers/misc/lis3lv02d/built-in.o

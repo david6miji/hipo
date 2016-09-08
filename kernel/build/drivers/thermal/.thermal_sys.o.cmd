@@ -1,1 +1,0 @@
-cmd_drivers/thermal/thermal_sys.o := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/thermal/thermal_sys.o drivers/thermal/thermal_core.o drivers/thermal/step_wise.o drivers/thermal/cpu_cooling.o 

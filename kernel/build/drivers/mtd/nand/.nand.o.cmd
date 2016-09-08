@@ -1,1 +1,0 @@
-cmd_drivers/mtd/nand/nand.o := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o drivers/mtd/nand/nand.o drivers/mtd/nand/nand_base.o drivers/mtd/nand/nand_bbt.o 

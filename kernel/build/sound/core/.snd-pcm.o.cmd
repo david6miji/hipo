@@ -1,1 +1,0 @@
-cmd_sound/core/snd-pcm.o := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o sound/core/snd-pcm.o sound/core/pcm.o sound/core/pcm_native.o sound/core/pcm_lib.o sound/core/pcm_timer.o sound/core/pcm_misc.o sound/core/pcm_memory.o 
