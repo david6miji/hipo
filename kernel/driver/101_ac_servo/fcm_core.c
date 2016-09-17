@@ -44,9 +44,9 @@
 
 /**
   * fcm_alloc() - allocate a instance of FCM
-  * @max_channel: fcm channel 
-  * @queue_size: fcm queue size 
-  *
+  * @max_channel	: fcm channel 
+  * @queue_size		: fcm queue size 
+  * 
   * Returns: A pointer to the allocated FCM or an ERR_PTR()-encoded 
   * error code on failure
   */
@@ -63,9 +63,9 @@ struct fcm *fcm_alloc( int channel_count, int queue_size ){
 	fcm->channel_count 	= channel_count;
 	fcm->queue_size		= queue_size;
 	
-	fcm->period_head	= 0;
+	fcm->period_head	=  0;
 	fcm->period_tail	= -1;
-	fcm->period_count	= 0;
+	fcm->period_count	=  0;
 	
 	return fcm;
 }
@@ -159,7 +159,7 @@ int	fcm_loop( struct fcm *fcm ){
 }
 
 /**
-  * fcm_peek_empty_period() - get empty period in internal period queue 
+  * fcm_peek_empty_period() - get empty period from internal period queue 
   * @fcm: fcm instance 
   *
   * Returns: A pointer to the allocated a period object or an ERR_PTR()-encoded 
@@ -190,6 +190,12 @@ struct fcm_period * fcm_peek_empty_period( struct fcm *fcm ){
 
 }
 
+/**
+  * fcm_push_period() - push setted period to internal period queue 
+  * @fcm: fcm instance 
+  *
+  * Returns: 0 on success or a negative error code on failure.
+  */
 int	fcm_push_period( struct fcm *fcm ){
 
 	if (IS_ERR_OR_NULL(fcm)){
@@ -236,6 +242,12 @@ struct fcm_period * fcm_pop_period( struct fcm *fcm ){
 	return period;
 }
 
+/**
+  * fcm_set_period_count() - set period count to empty period.
+  * @fcm: fcm instance 
+  *
+  * Returns: 0 on success or a negative error code on failure.
+  */
 int	fcm_set_period_count( struct fcm *fcm, struct fcm_period *period, int period_count ){
 	
 	if (IS_ERR_OR_NULL(fcm)){
@@ -251,6 +263,12 @@ int	fcm_set_period_count( struct fcm *fcm, struct fcm_period *period, int period
 	return 0;
 }
 
+/**
+  * fcm_set_channel_frequency() - set period count to empty period.
+  * @fcm: fcm instance
+  * 
+  * Returns: 0 on success or a negative error code on failure.
+  */
 int fcm_set_channel_frequency( 
         struct fcm 			*fcm, 
         struct fcm_period 	*period, 
@@ -277,24 +295,6 @@ int fcm_set_channel_frequency(
 	
 	return 0;
 }
-
-// fcm = fcm_alloc( MAX_CHANNEL, QUEUE_SIZE );
-// fcm_free( fcm );
-// fcm_loop( fcm );
-
-// fcm_enable_period( fcm );
-// fcm_disable_period( fcm );
-
-// fcm_period = fcm_peek_empty_period( fcm );
-// if( !IS_ERR_OR_NULL(fcm_period)){
-// 		fcm_set_period   ( fcm_period, 10 );
-// 		fcm_set_channel_frequency( fcm_period, 0, 4 , NULL );
-// 		fcm_set_channel_frequency( fcm_period, 1, 0 , NULL );
-// 		fcm_set_channel_frequency( fcm_period, 2, 6 , NULL );
-//		fcm_push( fcm, fcm_period );
-//	}
-
-// fcm_set_channel_function( fcm, 0, pulse_func );
 
 /* end */
 

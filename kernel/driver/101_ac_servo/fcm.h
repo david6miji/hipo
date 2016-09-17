@@ -46,18 +46,18 @@ struct fcm *fcm_alloc	( int channel_count, int queue_size );
 int 		fcm_free	( struct fcm *fcm );
 int			fcm_loop	( struct fcm *fcm );
 
-struct fcm_period * fcm_peek_empty_period	( struct fcm *fcm );
 int					fcm_push_period		 	( struct fcm *fcm );
 struct fcm_period * fcm_pop_period		 	( struct fcm *fcm );
 
-int					fcm_set_period_count 	( struct fcm *fcm, 
+struct fcm_period * fcm_peek_empty_period	( struct fcm *fcm );
+int					fcm_set_period_count 	( struct fcm 		*fcm, 
                                               struct fcm_period *period, 
-                                              int    period_count );
+                                              int    			period_count );
 
-int 			  fcm_set_channel_frequency	( struct fcm *fcm, 
+int 			  fcm_set_channel_frequency	( struct fcm 		*fcm, 
                                               struct fcm_period *period, 
- 											  int    channel_index,
- 											  int    frequency_count,
+ 											  int    			channel_index,
+ 											  int    			frequency_count,
 											  void  (*callback)(struct fcm *fcm, int channel_index) 
                                            );
 

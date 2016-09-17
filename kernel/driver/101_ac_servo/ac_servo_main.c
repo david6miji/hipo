@@ -93,7 +93,8 @@ void acsm_hrtimer_init( const s32 secs, const u32 nsecs )
 }
 
 static void pulse_callback(struct fcm *fcm, int channel_index ){
-	printk( " (Pulse:%d) ", channel_index ); 	
+//	printk( " (Pulse:%d) ", channel_index ); 
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -116,9 +117,9 @@ static int __init acsm_init(void)
 	if( !IS_ERR_OR_NULL(fcm_period)){
 		printk( "OK FCM_PERIOD\n" );
  		fcm_set_period_count		( fcm, fcm_period, 10 );
- 		fcm_set_channel_frequency	( fcm, fcm_period, 0, 4, pulse_callback );
- 		fcm_set_channel_frequency	( fcm, fcm_period, 1, 0, pulse_callback );
- 		fcm_set_channel_frequency	( fcm, fcm_period, 2, 6, pulse_callback );
+ 		fcm_set_channel_frequency	( fcm, fcm_period,  0, 4, pulse_callback );
+ 		fcm_set_channel_frequency	( fcm, fcm_period,  1, 0, pulse_callback );
+ 		fcm_set_channel_frequency	( fcm, fcm_period,  2, 6, pulse_callback );
 		fcm_push_period( fcm );
 	}
 
