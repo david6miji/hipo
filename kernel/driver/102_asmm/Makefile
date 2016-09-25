@@ -1,10 +1,11 @@
 #
 # kernel 3.0 driver Makefile
 #
-obj-m  				:= drv_ac_servo.o
-drv_ac_servo-objs 	 = ac_servo_main.o
-drv_ac_servo-objs 	+= fcm_core.o
-drv_ac_servo-objs 	+= ac_servo.o
+obj-m  			:= drv_asmm.o
+drv_asmm-objs 	 = asmm_main.o
+drv_asmm-objs 	+= fcm_core.o
+drv_asmm-objs 	+= ac_servo.o
+drv_asmm-objs 	+= asmm_sysfs.o
 
 CROSS_PATH		= /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux/
 CROSS_PREFIX	= arm-linux-gnueabihf-
@@ -15,7 +16,7 @@ default:
 	ARCH=arm $(MAKE) arm=ARM CROSS_COMPILE=${CROSS_PATH}/bin/${CROSS_PREFIX} -C $(KDIR) M=$(PWD)  
 
 install :
-	scp drv_ac_servo.ko root@192.168.1.210:/root/
+	scp drv_asmm.ko root@192.168.1.210:/root/
 	
 clean :
 	rm -rf *.ko
