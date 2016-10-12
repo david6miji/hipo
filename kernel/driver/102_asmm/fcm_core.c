@@ -43,14 +43,14 @@
 #include "fcm.h"
 
 /**
-  * fcm_alloc() - allocate a instance of FCM
-  * @max_channel	: fcm channel 
-  * @queue_size		: fcm queue size 
+  * fcm_create() - create a instance of FCM
+  * @channels    	: channel count
+  * @queue_size		: queue size 
   * 
   * Returns: A pointer to the allocated FCM or an ERR_PTR()-encoded 
   * error code on failure
   */
-struct fcm *fcm_alloc( int channel_count, int queue_size ){
+struct fcm *fcm_create( int channels, int queue_size ){
 	struct fcm *fcm;
 	
 	fcm = kmalloc( sizeof(struct fcm), GFP_KERNEL);
@@ -60,7 +60,7 @@ struct fcm *fcm_alloc( int channel_count, int queue_size ){
 	}
 	
 	memset( fcm, 0, sizeof(struct fcm) );
-	fcm->channel_count 	= channel_count;
+	fcm->channel_count 	= channels;
 	fcm->queue_size		= queue_size;
 	
 	fcm->period_head	=  0;
@@ -71,23 +71,35 @@ struct fcm *fcm_alloc( int channel_count, int queue_size ){
 }
 
 /**
-  * fcm_free() - free a instance of FCM
-  * @fcm: fcm instance 
+  * fcm_free() - destroy a instance of FCM
+  * @fcm: fcm struct pointer
   *
   * Returns: 0 on success or a negative error code on failure.
   */
-int fcm_free( struct fcm *fcm ){
+int fcm_destroy( struct fcm *fcm ){
 	if (IS_ERR_OR_NULL(fcm)){
 		return -1;
 	}
-	
+
 	kfree( fcm );
 	return 0;
 }
 
 /**
-  * fcm_loop() - This function is called by extern function 
-  * @fcm: fcm instance 
+  * fcm_get_channels() - get channel count
+  * @fcm: fcm instance
+  *
+  * Returns: channel count.
+  */
+int fcm_get_channels( struct fcm *fcm )
+{
+	return fcm->channel_count;
+}
+
+
+/**
+  * fcm_loop() - This function is called by extern function
+  * @fcm: fcm instance
   *
   * Returns: 0 on success or a negative error code on failure.
   */
@@ -105,27 +117,26 @@ int	fcm_loop( struct fcm *fcm ){
 		return -1;
 	}
 	
-	current_period = NULL;
+//	current_period = NULL;
 	
 //	printk( "\nFCM_LOOP : " );
 	
 //	printk( "fcm_loop() called (%ld).\n", jiffies );
 	if( fcm->current_period == NULL ){
 		fcm->current_period = fcm_pop_period( fcm );
-		if( IS_ERR_OR_NULL(current_period) ) return 0;
+		if( IS_ERR_OR_NULL(fcm->current_period) ) return 0;
 		fcm->current_period->period_index = 0;
 	}
-	
+
 	current_period = fcm->current_period;
 	if( current_period == NULL) return 0;
-	
-	
+
 //	printk( "FCM_LOOP : PASS ONE\n" );
 //	printk( "FCM_LOOP : period count = %d\n", current_period->period_count );
 //	printk( "FCM_LOOP : period index = %d\n", current_period->period_index );
 
 //	printk( "period index = %d ", current_period->period_index );
-	
+
 	dt = current_period->period_count;
 	channel_count = fcm->channel_count;
 	

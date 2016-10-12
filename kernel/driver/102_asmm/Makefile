@@ -16,7 +16,7 @@ default:
 	ARCH=arm $(MAKE) arm=ARM CROSS_COMPILE=${CROSS_PATH}/bin/${CROSS_PREFIX} -C $(KDIR) M=$(PWD)  
 
 install :
-	scp drv_asmm.ko root@192.168.1.210:/root/
+	scp drv_asmm.ko root@192.168.1.204:/root/
 	
 clean :
 	rm -rf *.ko

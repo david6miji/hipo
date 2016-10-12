@@ -53,7 +53,8 @@
 /* local var ------------------------------------------------------------------*/
 
 #define MAX_CHANNEL 	3
-static struct fcm *fcm = NULL;
+#define FCM_QUEUE_SIZE  FCM_MAX_PERIOD_COUNT
+struct fcm *fcm = NULL;
 
 #define MS_TO_NS(x) (x * 1E6L)
 static struct hrtimer 	hr_timer;
@@ -94,7 +95,6 @@ void acsm_hrtimer_init( const s32 secs, const u32 nsecs )
 
 static void pulse_callback(struct fcm *fcm, int channel_index ){
 //	printk( " (Pulse:%d) ", channel_index ); 
-	
 }
 
 //-----------------------------------------------------------------------------
@@ -106,11 +106,6 @@ static int __init assm_init(void)
 	
 //	struct fcm_period *fcm_period;
 //	
-//	printk( "FCM - Function Call Modulation Test\n" );
-//	fcm = fcm_alloc( MAX_CHANNEL, FCM_MAX_PERIOD_COUNT );
-//	if (IS_ERR_OR_NULL(fcm)){
-//		return -ENOMEM;
-//	}
 //	
 //	acsm_hrtimer_init( 0L, MS_TO_NS(100L) );
 //	
@@ -128,6 +123,13 @@ static int __init assm_init(void)
 //	acsm_hrtimer_start();
 
 	printk( "register asmm - ac servo motor manager\n");
+	
+	printk( "creater fcm\n" );
+	fcm = fcm_create( MAX_CHANNEL, FCM_QUEUE_SIZE );
+	if (IS_ERR_OR_NULL(fcm)){
+		return -ENOMEM;
+	}
+
 	asmm_sysfs_create();
 
 	return 0;
@@ -139,16 +141,19 @@ static int __init assm_init(void)
 *///---------------------------------------------------------------------------
 static void __exit assm_exit(void)
 {
+ 	int ret;
+
 	printk( "unregister asmm\n");
+	
+	printk( "destroy asmm sysfs\n");
 	asmm_sysfs_destroy();
 	
-// 	int ret;
 // 
 // 	ret = hrtimer_cancel( &hr_timer );
 // 	if (ret) printk("The timer was still in use...\n");
 // 	
-// 	ret = fcm_free( fcm );
-// 	printk( "Remove FCM ret = %d\n", ret );
+ 	ret = fcm_destroy( fcm );
+ 	printk( "Destroy FCM ret = %d\n", ret );
 	
 }
 

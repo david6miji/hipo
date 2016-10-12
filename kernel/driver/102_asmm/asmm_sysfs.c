@@ -41,7 +41,10 @@
 #include <asm/irq.h>
 
 #include "asmm_sysfs.h"
+#include "asmm_sysfs.h"
+#include "fcm.h"
 
+extern struct fcm *fcm;
 static DEFINE_MUTEX(sysfs_lock);
 
 // 	/sys/class/asmm/channels        : 읽기 : 시스템이 제공하는 채널 수 
@@ -50,14 +53,14 @@ static DEFINE_MUTEX(sysfs_lock);
 
 static ssize_t channels_show( struct class *class,
 							  struct class_attribute *attr,
-							 char *buf )
+							  char *buf )
 {
 	char *start = buf;
 
 	mutex_lock(&sysfs_lock);
 
-	buf += sprintf( buf, "1" );
-	
+	buf += sprintf( buf, "%d", fcm_get_channels(fcm) );
+
 	mutex_unlock(&sysfs_lock);
     return buf - start;
 }
@@ -313,9 +316,30 @@ static ssize_t active_show( struct class *class,
 
 	mutex_lock(&sysfs_lock);
 
-	buf += sprintf( buf, "seq period present\n" );
-	buf += sprintf( buf, "1   0      forward   10       0 \n" );
+//	buf += sprintf( buf, "seq period present\n" );
+//	buf += sprintf( buf, "1   0      forward   10       0 \n" );
 	
+	buf += sprintf( buf, "{\n"                            );
+	buf += sprintf( buf, "    \"period\"   : \"%d\",\n", 10 );
+	buf += sprintf( buf, "    \"present\"  : \"%d\",\n", 5 );
+	buf += sprintf( buf, "    \"progress\" : \"%s\",\n", "stop" );
+	buf += sprintf( buf, "    \"channels\" : [\n" );
+	buf += sprintf( buf, 
+	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\", \"move\" : \"%d\" }%c\n",
+		0, "forward",  11, 3, ',' 
+	);
+	buf += sprintf( buf, 
+	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\", \"move\" : \"%d\" }%c\n",
+		1, "stop",  12, 0, ',' 
+	);
+	buf += sprintf( buf, 
+	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\", \"move\" : \"%d\" }%c\n",
+		2, "backword",  13, 3, ' ' 
+	);
+	         
+	buf += sprintf( buf, "    ]\n"                        );
+	buf += sprintf( buf, "}\n"                            );
+
 	mutex_unlock(&sysfs_lock);
     return buf - start;
 }

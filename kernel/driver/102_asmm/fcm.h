@@ -45,9 +45,12 @@ struct fcm
 	
 };
 
-struct fcm *fcm_alloc	( int channel_count, int queue_size );
-int 		fcm_free	( struct fcm *fcm );
-int			fcm_loop	( struct fcm *fcm );
+struct fcm *fcm_create		( int channels, int queue_size );
+int 		fcm_destroy		( struct fcm *fcm );
+int         fcm_get_channels( struct fcm *fcm );
+
+int			fcm_loop		( struct fcm *fcm );
+
 
 int					fcm_push_period		 	( struct fcm *fcm );
 struct fcm_period * fcm_pop_period		 	( struct fcm *fcm );
