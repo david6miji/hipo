@@ -288,37 +288,27 @@ static ssize_t count_show( struct class *class,
     return buf - start;
 }
 
-// 	/sys/class/asmm/list            : 읽기 : 큐에 저장된 주기 리스트
-static ssize_t list_show( struct class *class,
-						   struct class_attribute *attr,
-						   char *buf )
-{
-	char *start = buf;
-
-	mutex_lock(&sysfs_lock);
-
-	buf += sprintf( buf, "seq channel direction distance\n" );
-	buf += sprintf( buf, "1   0       forward   10\n" );
-	buf += sprintf( buf, "1   1       forward   10\n" );
-	buf += sprintf( buf, "1   2       forward   10\n" );
-	buf += sprintf( buf, "2   0       backward  3\n" );
-	
-	mutex_unlock(&sysfs_lock);
-    return buf - start;
-}
-
 // 	/sys/class/asmm/active         : 읽기 : 진행 중인 처리 아이템 상태 정보
 static ssize_t active_show( struct class *class,
 					 	    struct class_attribute *attr,
 						    char *buf )
 {
 	char *start = buf;
+	struct fcm_period *active; 
 
 	mutex_lock(&sysfs_lock);
-
-//	buf += sprintf( buf, "seq period present\n" );
-//	buf += sprintf( buf, "1   0      forward   10       0 \n" );
 	
+	active = fcm_get_active( fcm );
+	printk( "ACTIVE = %p\n", active );
+	if( active == NULL ) 
+	{
+		
+	} 
+	else
+	{
+		
+	}
+
 	buf += sprintf( buf, "{\n"                            );
 	buf += sprintf( buf, "    \"period\"   : \"%d\",\n", 10 );
 	buf += sprintf( buf, "    \"present\"  : \"%d\",\n", 5 );
@@ -334,7 +324,7 @@ static ssize_t active_show( struct class *class,
 	);
 	buf += sprintf( buf, 
 	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\", \"move\" : \"%d\" }%c\n",
-		2, "backword",  13, 3, ' ' 
+		2, "backward",  13, 3, ' ' 
 	);
 	         
 	buf += sprintf( buf, "    ]\n"                        );
@@ -344,6 +334,69 @@ static ssize_t active_show( struct class *class,
     return buf - start;
 }
 
+// 	/sys/class/asmm/list            : 읽기 : 큐에 저장된 주기 리스트
+static ssize_t list_show( struct class *class,
+						   struct class_attribute *attr,
+						   char *buf )
+{
+	char *start = buf;
+	int  queue_count = fcm_get_queue_count( fcm );
+
+	mutex_lock(&sysfs_lock);
+
+	buf += sprintf( buf, "[\n"                              );
+	
+	printk( "queue_count = %d\n", queue_count );
+	
+	fcm_foreach_queue( fcm );
+	
+//	buf += sprintf( buf, "{\n"                              );
+//	buf += sprintf( buf, "    \"seq\"      : \"%d\",\n", 1  );
+//	buf += sprintf( buf, "    \"period\"   : \"%d\",\n", 11 );
+//	buf += sprintf( buf, "    \"channels\" : [\n" );
+//	buf += sprintf( buf, 
+//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
+//		0, "forward",  11, ',' 
+//	);
+//	buf += sprintf( buf, 
+//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
+//		1, "forward",  12, ',' 
+//	);
+//	buf += sprintf( buf, 
+//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
+//		2, "backward",  13, ' ' 
+//	);
+//	         
+//	buf += sprintf( buf, "    ]\n"                          );
+//	buf += sprintf( buf, "}%c\n",','                       );
+//
+//
+//	buf += sprintf( buf, "{\n"                              );
+//	buf += sprintf( buf, "    \"seq\"      : \"%d\",\n", 2 );
+//	buf += sprintf( buf, "    \"period\"   : \"%d\",\n", 12 );
+//	buf += sprintf( buf, "    \"channels\" : [\n" );
+//	buf += sprintf( buf, 
+//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
+//		0, "forward",  21, ',' 
+//	);
+//	buf += sprintf( buf, 
+//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
+//		1, "forward",  22, ',' 
+//	);
+//	buf += sprintf( buf, 
+//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
+//		2, "backward",  23, ' ' 
+//	);
+//	         
+//	buf += sprintf( buf, "    ]\n"                          );
+//	buf += sprintf( buf, "}%c\n",' '                       );
+
+	
+	buf += sprintf( buf, "]\n"                              );
+	
+	mutex_unlock(&sysfs_lock);
+    return buf - start;
+}
 
 static struct class_attribute asmm_class_attrs[] = {
     __ATTR(channels,	0400, channels_show,   NULL            ),
@@ -382,4 +435,3 @@ int asmm_sysfs_destroy(void)
 }
 
 /* end */
-

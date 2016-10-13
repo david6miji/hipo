@@ -96,6 +96,20 @@ int fcm_get_channels( struct fcm *fcm )
 	return fcm->channel_count;
 }
 
+struct fcm_period * fcm_get_active( struct fcm *fcm )
+{
+	return fcm->current_period;
+}
+
+int fcm_get_queue_count( struct fcm *fcm )
+{
+	return fcm->period_count;
+}
+
+void fcm_foreach_queue( struct fcm *fcm )
+{
+	
+}
 
 /**
   * fcm_loop() - This function is called by extern function
