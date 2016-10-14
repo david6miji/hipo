@@ -106,9 +106,23 @@ int fcm_get_queue_count( struct fcm *fcm )
 	return fcm->period_count;
 }
 
-void fcm_foreach_queue( struct fcm *fcm )
-{
+int	fcm_resume( struct fcm *fcm ){
+	if (IS_ERR_OR_NULL(fcm)){
+		return -1;
+	}
+	fcm->run = FCM_RUN_RUN;
 	
+	return 0;
+}
+
+int	fcm_stop( struct fcm *fcm ){
+	if (IS_ERR_OR_NULL(fcm)){
+		return -1;
+	}
+	
+	fcm->run = FCM_RUN_STOP;
+	
+	return 0;
 }
 
 /**
@@ -131,27 +145,33 @@ int	fcm_loop( struct fcm *fcm ){
 		return -1;
 	}
 	
+	if ( fcm->run != FCM_RUN_RUN ) return 0;
+	
 //	current_period = NULL;
 	
 //	printk( "\nFCM_LOOP : " );
 	
-//	printk( "fcm_loop() called (%ld).\n", jiffies );
+	printk( "fcm_loop() called (%ld).\n", jiffies );
 	if( fcm->current_period == NULL ){
 		fcm->current_period = fcm_pop_period( fcm );
-		if( IS_ERR_OR_NULL(fcm->current_period) ) return 0;
-		fcm->current_period->period_index = 0;
+		if( IS_ERR_OR_NULL(fcm->current_period) ) 
+		{
+			fcm->run = FCM_RUN_STOP;
+			return 0;
+		}	
+		fcm->current_period->time_index = 0;
 	}
 
 	current_period = fcm->current_period;
 	if( current_period == NULL) return 0;
 
 //	printk( "FCM_LOOP : PASS ONE\n" );
-//	printk( "FCM_LOOP : period count = %d\n", current_period->period_count );
+//	printk( "FCM_LOOP : period count = %d\n", current_period->time_count );
 //	printk( "FCM_LOOP : period index = %d\n", current_period->period_index );
 
 //	printk( "period index = %d ", current_period->period_index );
 
-	dt = current_period->period_count;
+	dt = current_period->time_count;
 	channel_count = fcm->channel_count;
 	
 	for( channel_index = 0; channel_index < channel_count; channel_index++ ){
@@ -166,6 +186,7 @@ int	fcm_loop( struct fcm *fcm ){
 		if (error >-dt) { channel->error -= dd; }
 		if (error < dd) { 
 			channel->error += dt; 
+			channel->frequency_index++;
 			if( channel->callback != NULL ){
 				channel->callback( fcm, channel_index );
 			}
@@ -175,8 +196,8 @@ int	fcm_loop( struct fcm *fcm ){
 
 	}
 	
-	current_period->period_index = current_period->period_index + 1;
-	if( current_period->period_index >= current_period->period_count ){
+	current_period->time_index = current_period->time_index + 1;
+	if( current_period->time_index >= current_period->time_count ){
 		fcm->current_period = NULL;
 	}
 
@@ -221,9 +242,15 @@ struct fcm_period * fcm_peek_empty_period( struct fcm *fcm ){
   *
   * Returns: 0 on success or a negative error code on failure.
   */
-int	fcm_push_period( struct fcm *fcm ){
+int	fcm_push_period( struct fcm *fcm , struct fcm_period *period  ){
 
+    struct fcm_period *empty_period = NULL;
+	
 	if (IS_ERR_OR_NULL(fcm)){
+		return -ENOMEM;
+	}
+
+	if (IS_ERR_OR_NULL(period)){
 		return -ENOMEM;
 	}
 
@@ -231,6 +258,9 @@ int	fcm_push_period( struct fcm *fcm ){
 		// no empty period !	
 		return -ENOMEM;
 	}
+	
+	empty_period = fcm_peek_empty_period( fcm );
+	memcpy( empty_period, period, sizeof( struct fcm_period ) );
 	
 	if( fcm->period_tail == ( fcm->queue_size -1 ) ){
 	    fcm->period_tail = -1;       
@@ -283,7 +313,7 @@ int	fcm_set_period_count( struct fcm *fcm, struct fcm_period *period, int period
 		return -ENOMEM;
 	}
 	
-	period->period_count = period_count;
+	period->time_count = period_count;
 	
 	return 0;
 }
@@ -313,12 +343,47 @@ int fcm_set_channel_frequency(
 	channel->frequency_count 	= frequency_count;
 	channel->callback 			= callback;
 	
-	dt = period->period_count;
+	dt = period->time_count;
 	dd = channel->frequency_count;
 	
 	channel->error	= ( dt > dd ? dt : -dd ) / 2;
 	
 	return 0;
+}
+
+void fcm_clear( struct fcm *fcm )
+{
+	int index;
+	
+	for( index = 0; index < FCM_MAX_PERIOD_COUNT; index++ )
+	{
+		if( fcm->period_count == 0 ) break;
+		fcm_pop_period( fcm );
+	}
+	
+	fcm->current_period = NULL;
+	
+	return ;
+	
+}
+
+int fcm_get_first_index( struct fcm *fcm )
+{
+	return fcm->period_head;
+}
+
+struct fcm_period * fcm_get_period_at( struct fcm *fcm , int index )
+{
+	struct fcm_period 	*period;
+
+	if (IS_ERR_OR_NULL(fcm)){
+		return ERR_PTR(-ENOMEM);
+	}
+
+	period = &(fcm->periods[index]); 
+	
+	return period;
+	
 }
 
 /* end */

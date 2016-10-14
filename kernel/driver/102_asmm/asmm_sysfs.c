@@ -47,6 +47,9 @@
 extern struct fcm *fcm;
 static DEFINE_MUTEX(sysfs_lock);
 
+struct fcm_period 	edit_period; 
+static int 			select_channel = 0;
+
 // 	/sys/class/asmm/channels        : 읽기 : 시스템이 제공하는 채널 수 
 // 										 cat channels 
 // 										 3
@@ -92,6 +95,11 @@ static ssize_t period_store(  struct class *class,
 	}
 	
 	printk( "CALL write period %lu\n", val );
+	
+	memset( &edit_period, 0, sizeof(edit_period) );
+//	edit_period.time_count = val;
+	fcm_set_period_count( fcm, &edit_period, val ); 
+	select_channel = 0;
 
 	mutex_unlock(&sysfs_lock);
 	return status ? : size;
@@ -132,6 +140,7 @@ static ssize_t channel_store(  struct class *class,
 	}
 	
 	printk( "CALL write channel %lu\n", val );
+	select_channel = val;
 
 	mutex_unlock(&sysfs_lock);
 	return status ? : size;
@@ -145,7 +154,7 @@ static ssize_t channel_show( struct class *class,
 
 	mutex_lock(&sysfs_lock);
 
-	buf += sprintf( buf, "3" );
+	buf += sprintf( buf, "%d", select_channel );
 	
 	mutex_unlock(&sysfs_lock);
     return buf - start;
@@ -168,12 +177,12 @@ static ssize_t direction_store(  struct class *class,
 	
 	printk( "CALL write direction --> %s:%d\n", buf,size);	
 
-	if( strncmp( buf,"forward", size-1 ) == 0 ){
-	    printk( "CALL write direction forward\n" );	
-	} else if( strncmp( buf,"backward",size-1 ) == 0 ){
-	    printk( "CALL write direction backward\n" );	
+	if( strncmp( buf,FCM_DIRECTION_FORWARD_STR, size-1 ) == 0 ){
+		edit_period.channels[select_channel].direction = FCM_DIRECTION_FORWARD;
+	} else if( strncmp( buf,FCM_DIRECTION_BACKWARD_STR,size-1 ) == 0 ){
+		edit_period.channels[select_channel].direction = FCM_DIRECTION_BACKWARD;
 	} else {
-		printk( "CALL write direction error then forward\n");	
+		edit_period.channels[select_channel].direction = FCM_DIRECTION_STOP;
 	}
 
 	mutex_unlock(&sysfs_lock);
@@ -187,9 +196,14 @@ static ssize_t direction_show( struct class *class,
 	char *start = buf;
 
 	mutex_lock(&sysfs_lock);
-
-	buf += sprintf( buf, "forward" );
 	
+	switch( edit_period.channels[select_channel].direction)
+	{
+	case FCM_DIRECTION_FORWARD  : buf += sprintf( buf, FCM_DIRECTION_FORWARD_STR  ); break;	
+	case FCM_DIRECTION_STOP     : buf += sprintf( buf, FCM_DIRECTION_STOP_STR     ); break;	
+	case FCM_DIRECTION_BACKWARD : buf += sprintf( buf, FCM_DIRECTION_BACKWARD_STR ); break;	
+	}
+
 	mutex_unlock(&sysfs_lock);
     return buf - start;
 }
@@ -219,6 +233,8 @@ static ssize_t distance_store(  struct class *class,
 	}
 	
 	printk( "CALL write distance %lu\n", val );
+	
+	fcm_set_channel_frequency( fcm, &edit_period, select_channel,val, NULL );
 
 	mutex_unlock(&sysfs_lock);
 	return status ? : size;
@@ -251,6 +267,8 @@ static ssize_t push_store(  struct class *class,
 	mutex_lock(&sysfs_lock);
 
 	printk( "CALL write push\n" );
+	
+	fcm_push_period( fcm,  &edit_period );
 
 	mutex_unlock(&sysfs_lock);
 	return status ? : size;
@@ -268,6 +286,43 @@ static ssize_t flush_store(  struct class *class,
 	mutex_lock(&sysfs_lock);
 
 	printk( "CALL write flush\n" );
+	fcm_clear( fcm );
+
+	mutex_unlock(&sysfs_lock);
+	return status ? : size;
+}
+
+// 
+// 	/sys/class/asmm/resume           : 재계 : 중지된 펄스 반복 문을 진행한다. 
+// 	
+static ssize_t resume_store(  struct class *class,
+                              struct class_attribute *attr,
+                              const char *buf, size_t size)
+{
+	ssize_t 		status=0;
+	
+	mutex_lock(&sysfs_lock);
+
+	printk( "CALL write resume\n" );
+	fcm_resume( fcm );
+
+	mutex_unlock(&sysfs_lock);
+	return status ? : size;
+}
+
+// 
+// 	/sys/class/asmm/stop           : 중지 : 중지된 펄스 반복 문을 중지 한다. 
+// 	
+static ssize_t stop_store(  struct class *class,
+                              struct class_attribute *attr,
+                              const char *buf, size_t size)
+{
+	ssize_t 		status=0;
+	
+	mutex_lock(&sysfs_lock);
+
+	printk( "CALL write stop\n" );
+	fcm_stop( fcm );
 
 	mutex_unlock(&sysfs_lock);
 	return status ? : size;
@@ -295,38 +350,55 @@ static ssize_t active_show( struct class *class,
 {
 	char *start = buf;
 	struct fcm_period *active; 
+	struct fcm_period active_null; 
+	int    channel_index;
+	char   *run_str = NULL;
 
 	mutex_lock(&sysfs_lock);
 	
 	active = fcm_get_active( fcm );
-	printk( "ACTIVE = %p\n", active );
+//	printk( "ACTIVE = %p\n", active );
 	if( active == NULL ) 
 	{
-		
+		memset( &active_null , 0, sizeof( active_null ) );
+		active = &active_null;
 	} 
-	else
+	
+	switch( fcm->run )
 	{
-		
+	case	FCM_RUN_RUN   :  run_str = FCM_RUN_RUN_STR     ; break; 
+	case	FCM_RUN_STOP  :  run_str = FCM_RUN_STOP_STR    ; break; 
+	case	FCM_RUN_PAUSE :  run_str = FCM_RUN_PAUSE_STR   ; break; 
 	}
-
-	buf += sprintf( buf, "{\n"                            );
-	buf += sprintf( buf, "    \"period\"   : \"%d\",\n", 10 );
-	buf += sprintf( buf, "    \"present\"  : \"%d\",\n", 5 );
-	buf += sprintf( buf, "    \"progress\" : \"%s\",\n", "stop" );
+	
+	buf += sprintf( buf, "{\n"                                  );
+	buf += sprintf( buf, "    \"period\"   : \"%d\",\n", active->time_count );
+	buf += sprintf( buf, "    \"present\"  : \"%d\",\n", active->time_index );
+	buf += sprintf( buf, "    \"progress\" : \"%s\",\n", fcm->run ? "run" : "stop" );
 	buf += sprintf( buf, "    \"channels\" : [\n" );
-	buf += sprintf( buf, 
-	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\", \"move\" : \"%d\" }%c\n",
-		0, "forward",  11, 3, ',' 
-	);
-	buf += sprintf( buf, 
-	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\", \"move\" : \"%d\" }%c\n",
-		1, "stop",  12, 0, ',' 
-	);
-	buf += sprintf( buf, 
-	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\", \"move\" : \"%d\" }%c\n",
-		2, "backward",  13, 3, ' ' 
-	);
-	         
+	
+	for( channel_index = 0; channel_index < fcm->channel_count; channel_index++ )
+	{
+		struct fcm_channel *channel = &(active->channels[channel_index]);
+		char   *direction_str = NULL;
+		char   last_comma = ' ';
+		
+		switch( channel->direction )
+		{
+		case	FCM_DIRECTION_FORWARD   :  direction_str = FCM_DIRECTION_FORWARD_STR ; break; 
+		case	FCM_DIRECTION_STOP      :  direction_str = FCM_DIRECTION_STOP_STR    ; break; 
+		case	FCM_DIRECTION_BACKWARD  :  direction_str = FCM_DIRECTION_BACKWARD_STR; break; 
+		}
+		
+		if( channel_index == fcm->channel_count - 1 )	last_comma = ' '; 
+		else                                         	last_comma = ',';
+
+		buf += sprintf( buf, 
+			"        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\", \"move\" : \"%d\" }%c\n",
+			channel_index, direction_str,  channel->frequency_count,channel->frequency_index, last_comma 
+		);
+	}
+	
 	buf += sprintf( buf, "    ]\n"                        );
 	buf += sprintf( buf, "}\n"                            );
 
@@ -340,57 +412,71 @@ static ssize_t list_show( struct class *class,
 						   char *buf )
 {
 	char *start = buf;
-	int  queue_count = fcm_get_queue_count( fcm );
+	int  queue_count;
+	int  period_index;
+	int  period_loop;
+	char period_last_comma = ' ';
+	int  channel_index;
 
 	mutex_lock(&sysfs_lock);
+	
+	queue_count 	= fcm_get_queue_count( fcm );
+	period_index	= fcm_get_first_index( fcm );
+
+//	printk( "queue_count = %d\n", queue_count );
 
 	buf += sprintf( buf, "[\n"                              );
 	
-	printk( "queue_count = %d\n", queue_count );
-	
-	fcm_foreach_queue( fcm );
-	
-//	buf += sprintf( buf, "{\n"                              );
-//	buf += sprintf( buf, "    \"seq\"      : \"%d\",\n", 1  );
-//	buf += sprintf( buf, "    \"period\"   : \"%d\",\n", 11 );
-//	buf += sprintf( buf, "    \"channels\" : [\n" );
-//	buf += sprintf( buf, 
-//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
-//		0, "forward",  11, ',' 
-//	);
-//	buf += sprintf( buf, 
-//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
-//		1, "forward",  12, ',' 
-//	);
-//	buf += sprintf( buf, 
-//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
-//		2, "backward",  13, ' ' 
-//	);
-//	         
-//	buf += sprintf( buf, "    ]\n"                          );
-//	buf += sprintf( buf, "}%c\n",','                       );
-//
-//
-//	buf += sprintf( buf, "{\n"                              );
-//	buf += sprintf( buf, "    \"seq\"      : \"%d\",\n", 2 );
-//	buf += sprintf( buf, "    \"period\"   : \"%d\",\n", 12 );
-//	buf += sprintf( buf, "    \"channels\" : [\n" );
-//	buf += sprintf( buf, 
-//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
-//		0, "forward",  21, ',' 
-//	);
-//	buf += sprintf( buf, 
-//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
-//		1, "forward",  22, ',' 
-//	);
-//	buf += sprintf( buf, 
-//	    "        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
-//		2, "backward",  23, ' ' 
-//	);
-//	         
-//	buf += sprintf( buf, "    ]\n"                          );
-//	buf += sprintf( buf, "}%c\n",' '                       );
+	for( period_loop = 0; period_loop < queue_count; period_loop++ )
+	{
+	    struct fcm_period *period = fcm_get_period_at( fcm , period_index%fcm->queue_size );
+		period_index++;
 
+		buf += sprintf( buf, "{\n"                              );
+		buf += sprintf( buf, "    \"seq\"      : \"%d\",\n", 0  );
+		buf += sprintf( buf, "    \"period\"   : \"%d\",\n", period->time_count );
+		buf += sprintf( buf, "    \"channels\" : [\n" );
+		
+		for( channel_index = 0; channel_index < fcm->channel_count; channel_index++ )
+		{
+			struct fcm_channel *channel = &(period->channels[channel_index]);
+			char   *direction_str = NULL;
+			char   last_comma = ' ';
+			
+			switch( channel->direction )
+			{
+			case	FCM_DIRECTION_FORWARD   :  direction_str = FCM_DIRECTION_FORWARD_STR ; break; 
+			case	FCM_DIRECTION_STOP      :  direction_str = FCM_DIRECTION_STOP_STR    ; break; 
+			case	FCM_DIRECTION_BACKWARD  :  direction_str = FCM_DIRECTION_BACKWARD_STR; break; 
+			}
+			
+			if( channel_index == fcm->channel_count - 1 )	last_comma = ' '; 
+			else                                         	last_comma = ',';
+
+			buf += sprintf( buf, 
+				"        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
+				channel_index, direction_str,  channel->frequency_count, last_comma 
+			);
+			
+		}
+		
+//		buf += sprintf( buf, 
+//			"        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
+//			1, "forward",  22, ',' 
+//		);
+//		buf += sprintf( buf, 
+//			"        { \"channel\" : \"%d\", \"direction\" : \"%s\" , \"distance\" : \"%d\" }%c\n",
+//			2, "backward",  23, ' ' 
+//		);
+				 
+		buf += sprintf( buf, "    ]\n"                          );
+		
+		if( period_loop == queue_count - 1 ) period_last_comma = ' '; 
+		else                                 period_last_comma = ',';
+
+		buf += sprintf( buf, "}%c\n",period_last_comma );
+
+    }
 	
 	buf += sprintf( buf, "]\n"                              );
 	
@@ -406,6 +492,8 @@ static struct class_attribute asmm_class_attrs[] = {
     __ATTR(distance,    0600, distance_show,   distance_store  ),
     __ATTR(push,        0200, NULL,            push_store      ),
     __ATTR(flush,       0200, NULL,            flush_store     ),
+    __ATTR(resume,      0200, NULL,            resume_store     ),
+    __ATTR(stop,        0200, NULL,            stop_store       ),
     __ATTR(count,       0400, count_show,      NULL            ),
     __ATTR(list,        0400, list_show,       NULL            ),
     __ATTR(active,      0400, active_show,     NULL            ),

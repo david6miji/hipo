@@ -19,19 +19,19 @@
 #include <linux/version.h>
 #include <linux/init.h>
 #include <linux/fs.h>
-#include <linux/sched.h> 
+#include <linux/sched.h>
 #include <linux/interrupt.h>
 #include <linux/wait.h>
-#include <linux/slab.h>    
-#include <linux/poll.h>     
+#include <linux/slab.h>
+#include <linux/poll.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <linux/workqueue.h>
-#include <linux/irq.h>		
+#include <linux/irq.h>
 #include <linux/hrtimer.h>
 #include <linux/ktime.h>
-#include <linux/time.h>			
-#include <linux/timer.h>		
+#include <linux/time.h>
+#include <linux/timer.h>
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <asm/uaccess.h>
@@ -104,27 +104,8 @@ static void pulse_callback(struct fcm *fcm, int channel_index ){
 static int __init assm_init(void)
 {
 	
-//	struct fcm_period *fcm_period;
-//	
-//	
-//	acsm_hrtimer_init( 0L, MS_TO_NS(100L) );
-//	
-//	fcm_period = fcm_peek_empty_period( fcm );
-//	if( !IS_ERR_OR_NULL(fcm_period)){
-//		printk( "OK FCM_PERIOD\n" );
-// 		fcm_set_period_count		( fcm, fcm_period, 10 );
-// 		fcm_set_channel_frequency	( fcm, fcm_period,  0, 4, pulse_callback );
-// 		fcm_set_channel_frequency	( fcm, fcm_period,  1, 0, pulse_callback );
-// 		fcm_set_channel_frequency	( fcm, fcm_period,  2, 6, pulse_callback );
-//		fcm_push_period( fcm );
-//	}
-//
-//	printk( "Starting hrtimer\n");
-//	acsm_hrtimer_start();
-
 	printk( "register asmm - ac servo motor manager\n");
-	
-	printk( "creater fcm\n" );
+
 	fcm = fcm_create( MAX_CHANNEL, FCM_QUEUE_SIZE );
 	if (IS_ERR_OR_NULL(fcm)){
 		return -ENOMEM;
@@ -132,6 +113,9 @@ static int __init assm_init(void)
 
 	asmm_sysfs_create();
 
+	acsm_hrtimer_init( 0L, MS_TO_NS(1000L) );
+	acsm_hrtimer_start();
+	
 	return 0;
 }
 
@@ -143,16 +127,13 @@ static void __exit assm_exit(void)
 {
  	int ret;
 
-	printk( "unregister asmm\n");
+ 	ret = hrtimer_cancel( &hr_timer );
+ 	if (ret) printk("The timer was still in use...\n");
 	
-	printk( "destroy asmm sysfs\n");
 	asmm_sysfs_destroy();
 	
-// 
-// 	ret = hrtimer_cancel( &hr_timer );
-// 	if (ret) printk("The timer was still in use...\n");
-// 	
  	ret = fcm_destroy( fcm );
+	
  	printk( "Destroy FCM ret = %d\n", ret );
 	
 }
