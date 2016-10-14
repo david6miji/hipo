@@ -1,1 +1,0 @@
-cmd_/work/kernel/driver/102_asmm/drv_asmm.o := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL    -r -o /work/kernel/driver/102_asmm/drv_asmm.o /work/kernel/driver/102_asmm/asmm_main.o /work/kernel/driver/102_asmm/fcm_core.o /work/kernel/driver/102_asmm/ac_servo.o /work/kernel/driver/102_asmm/asmm_sysfs.o 

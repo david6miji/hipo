@@ -1,1 +1,0 @@
-cmd_/work/kernel/driver/102_asmm/drv_asmm.ko := /opt/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux//bin/arm-linux-gnueabihf-ld -EL -r  -T /work/kernel/linux-imx6_3.10.53/scripts/module-common.lds --build-id  -o /work/kernel/driver/102_asmm/drv_asmm.ko /work/kernel/driver/102_asmm/drv_asmm.o /work/kernel/driver/102_asmm/drv_asmm.mod.o
