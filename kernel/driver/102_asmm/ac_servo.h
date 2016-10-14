@@ -20,10 +20,7 @@ struct ac_servo_channel
 int asc_init( void );
 int asc_free( void );
 
-int asc_register_channel  ( struct ac_servo_channel *channel );
-int asc_unregister_channel( struct ac_servo_channel *channel );
-
-int asc_do_channel( struct ac_servo_channel *channel );
+void asc_pulse_callback(struct fcm_channel *channel, int mode, int channel_index);
 
 #endif  // _AC_SERVO_H_
 

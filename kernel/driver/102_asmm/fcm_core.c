@@ -151,7 +151,7 @@ int	fcm_loop( struct fcm *fcm ){
 	
 //	printk( "\nFCM_LOOP : " );
 	
-	printk( "fcm_loop() called (%ld).\n", jiffies );
+//	printk( "fcm_loop() called (%ld).\n", jiffies );
 	if( fcm->current_period == NULL ){
 		fcm->current_period = fcm_pop_period( fcm );
 		if( IS_ERR_OR_NULL(fcm->current_period) ) 
@@ -175,6 +175,13 @@ int	fcm_loop( struct fcm *fcm ){
 	channel_count = fcm->channel_count;
 	
 	for( channel_index = 0; channel_index < channel_count; channel_index++ ){
+		channel = &(current_period->channels[channel_index]);
+		if( channel->callback != NULL ){
+			channel->callback( channel, FCM_CALLBACK_MODE_READY, channel_index );
+		}
+	}
+	
+	for( channel_index = 0; channel_index < channel_count; channel_index++ ){
 //		printk( "FCM_LOOP : channel index = %d\n", channel_index );
 		channel = &(current_period->channels[channel_index]);
 		
@@ -188,12 +195,19 @@ int	fcm_loop( struct fcm *fcm ){
 			channel->error += dt; 
 			channel->frequency_index++;
 			if( channel->callback != NULL ){
-				channel->callback( fcm, channel_index );
+				channel->callback( channel, FCM_CALLBACK_MODE_PULSE, channel_index );
 			}
 		} else {
 //			printk( " (     :%d) ", channel_index ); 
 		}
 
+	}
+
+	for( channel_index = 0; channel_index < channel_count; channel_index++ ){
+		channel = &(current_period->channels[channel_index]);
+		if( channel->callback != NULL ){
+			channel->callback( channel, FCM_CALLBACK_MODE_DONE, channel_index );
+		}
 	}
 	
 	current_period->time_index = current_period->time_index + 1;
@@ -329,7 +343,7 @@ int fcm_set_channel_frequency(
         struct fcm_period 	*period, 
  		int    				channel_index,
  		int    				frequency_count,
- 		void  (*callback)(struct fcm *fcm, int channel_index) 
+ 		void  (*callback)(struct fcm_channel *channel, int mode, int channel_index) 
 ){
 	struct fcm_channel *channel;
 	int 				dt;

@@ -736,6 +736,29 @@ deps_/work/kernel/driver/102_asmm/ac_servo.o := \
   /work/kernel/linux-imx6_3.10.53/arch/arm/include/asm/unistd.h \
     $(wildcard include/config/oabi/compat.h) \
   /work/kernel/linux-imx6_3.10.53/arch/arm/include/uapi/asm/unistd.h \
+  /work/kernel/linux-imx6_3.10.53/include/linux/delay.h \
+  /work/kernel/linux-imx6_3.10.53/arch/arm/include/asm/delay.h \
+  /work/kernel/linux-imx6_3.10.53/include/linux/gpio.h \
+    $(wildcard include/config/gpiolib.h) \
+    $(wildcard include/config/arch/have/custom/gpio/h.h) \
+  /work/kernel/linux-imx6_3.10.53/arch/arm/include/asm/gpio.h \
+    $(wildcard include/config/arch/nr/gpio.h) \
+    $(wildcard include/config/need/mach/gpio/h.h) \
+  /work/kernel/linux-imx6_3.10.53/include/asm-generic/gpio.h \
+    $(wildcard include/config/of/gpio.h) \
+    $(wildcard include/config/of.h) \
+    $(wildcard include/config/gpio/sysfs.h) \
+  /work/kernel/linux-imx6_3.10.53/include/linux/of.h \
+    $(wildcard include/config/sparc.h) \
+    $(wildcard include/config/of/dynamic.h) \
+    $(wildcard include/config/attach/node.h) \
+    $(wildcard include/config/detach/node.h) \
+    $(wildcard include/config/add/property.h) \
+    $(wildcard include/config/remove/property.h) \
+    $(wildcard include/config/update/property.h) \
+    $(wildcard include/config/proc/devicetree.h) \
+  /work/kernel/linux-imx6_3.10.53/arch/arm/include/asm/prom.h \
+  /work/kernel/linux-imx6_3.10.53/include/linux/pinctrl/pinctrl.h \
   /work/kernel/driver/102_asmm/fcm.h \
 
 /work/kernel/driver/102_asmm/ac_servo.o: $(deps_/work/kernel/driver/102_asmm/ac_servo.o)

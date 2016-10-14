@@ -20,18 +20,23 @@ __attribute__((section("__versions"))) = {
 	{ 0x90f491c, __VMLINUX_SYMBOL_STR(module_layout) },
 	{ 0xff178f6, __VMLINUX_SYMBOL_STR(__aeabi_idivmod) },
 	{ 0x4b0ac955, __VMLINUX_SYMBOL_STR(hrtimer_cancel) },
+	{ 0x47229b5c, __VMLINUX_SYMBOL_STR(gpio_request) },
+	{ 0x432fd7f6, __VMLINUX_SYMBOL_STR(__gpio_set_value) },
 	{ 0x47a9c71b, __VMLINUX_SYMBOL_STR(mutex_unlock) },
 	{ 0x91715312, __VMLINUX_SYMBOL_STR(sprintf) },
-	{ 0x7d11c268, __VMLINUX_SYMBOL_STR(jiffies) },
 	{ 0xfa2a45e, __VMLINUX_SYMBOL_STR(__memzero) },
+	{ 0x65d6d0f0, __VMLINUX_SYMBOL_STR(gpio_direction_input) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0xa1dba061, __VMLINUX_SYMBOL_STR(class_unregister) },
+	{ 0xa8f59416, __VMLINUX_SYMBOL_STR(gpio_direction_output) },
 	{ 0x84b183ae, __VMLINUX_SYMBOL_STR(strncmp) },
 	{ 0xe175e6a8, __VMLINUX_SYMBOL_STR(mutex_lock) },
+	{ 0x8e865d3c, __VMLINUX_SYMBOL_STR(arm_delay_ops) },
 	{ 0x47492db5, __VMLINUX_SYMBOL_STR(__class_register) },
 	{ 0x93fca811, __VMLINUX_SYMBOL_STR(__get_free_pages) },
 	{ 0xb590822d, __VMLINUX_SYMBOL_STR(hrtimer_start) },
 	{ 0x996bdb64, __VMLINUX_SYMBOL_STR(_kstrtoul) },
+	{ 0xfe990052, __VMLINUX_SYMBOL_STR(gpio_free) },
 	{ 0x37a0cba, __VMLINUX_SYMBOL_STR(kfree) },
 	{ 0x9d669763, __VMLINUX_SYMBOL_STR(memcpy) },
 	{ 0x54d8b7ba, __VMLINUX_SYMBOL_STR(hrtimer_init) },
@@ -44,4 +49,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "77C4FCD2D1F2F630351C077");
+MODULE_INFO(srcversion, "E7720D075CDB4A7C69898D3");

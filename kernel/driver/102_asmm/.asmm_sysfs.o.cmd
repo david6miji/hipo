@@ -736,8 +736,9 @@ deps_/work/kernel/driver/102_asmm/asmm_sysfs.o := \
   /work/kernel/linux-imx6_3.10.53/arch/arm/include/asm/unistd.h \
     $(wildcard include/config/oabi/compat.h) \
   /work/kernel/linux-imx6_3.10.53/arch/arm/include/uapi/asm/unistd.h \
-  /work/kernel/driver/102_asmm/asmm_sysfs.h \
   /work/kernel/driver/102_asmm/fcm.h \
+  /work/kernel/driver/102_asmm/ac_servo.h \
+  /work/kernel/driver/102_asmm/asmm_sysfs.h \
 
 /work/kernel/driver/102_asmm/asmm_sysfs.o: $(deps_/work/kernel/driver/102_asmm/asmm_sysfs.o)
 

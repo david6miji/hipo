@@ -28,6 +28,10 @@
 #define     FCM_RUN_STOP_STR   "stop"
 #define     FCM_RUN_PAUSE_STR  "pause"
 
+#define     FCM_CALLBACK_MODE_READY        	1
+#define     FCM_CALLBACK_MODE_PULSE			2
+#define     FCM_CALLBACK_MODE_DONE         	3
+
 struct fcm;
 
 struct fcm_channel 
@@ -36,9 +40,7 @@ struct fcm_channel
 	int 	frequency_count;
 	int 	frequency_index;
 	int		error;
-	void  (*before  )(struct fcm *fcm, int channel_index);
-	void  (*callback)(struct fcm *fcm, int channel_index);
-	void  (*after   )(struct fcm *fcm, int channel_index);
+	void  (*callback)(struct fcm_channel *channel, int mode, int channel_index);
 };
 
 struct fcm_period
@@ -71,8 +73,8 @@ int 			  fcm_set_channel_frequency	( struct fcm 		*fcm,
                                               struct fcm_period *period, 
  											  int    			channel_index,
  											  int    			frequency_count,
-											  void  (*callback)(struct fcm *fcm, int channel_index) 
-                                           );
+											  void  (*callback)(struct fcm_channel *channel, int mode, int channel_index) 
+                                            );
 										   
 struct fcm_period * fcm_peek_empty_period	( struct fcm *fcm );
 

@@ -40,9 +40,9 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 
-#include "asmm_sysfs.h"
-#include "asmm_sysfs.h"
 #include "fcm.h"
+#include "ac_servo.h"
+#include "asmm_sysfs.h"
 
 extern struct fcm *fcm;
 static DEFINE_MUTEX(sysfs_lock);
@@ -234,7 +234,7 @@ static ssize_t distance_store(  struct class *class,
 	
 	printk( "CALL write distance %lu\n", val );
 	
-	fcm_set_channel_frequency( fcm, &edit_period, select_channel,val, NULL );
+	fcm_set_channel_frequency( fcm, &edit_period, select_channel,val, asc_pulse_callback );
 
 	mutex_unlock(&sysfs_lock);
 	return status ? : size;

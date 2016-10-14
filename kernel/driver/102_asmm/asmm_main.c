@@ -40,8 +40,9 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 
-#include "asmm_sysfs.h"
 #include "fcm.h"
+#include "asmm_sysfs.h"
+#include "ac_servo.h"
 
 #define  THIS_DRV_VER		"0.0.1"
 #define  THIS_DRV_NAME		DRIVER_NAME_ASSM
@@ -93,10 +94,6 @@ void acsm_hrtimer_init( const s32 secs, const u32 nsecs )
 	
 }
 
-static void pulse_callback(struct fcm *fcm, int channel_index ){
-//	printk( " (Pulse:%d) ", channel_index ); 
-}
-
 //-----------------------------------------------------------------------------
 /** @brief   driver init
 	@remark  
@@ -106,6 +103,8 @@ static int __init assm_init(void)
 	
 	printk( "register asmm - ac servo motor manager\n");
 
+	asc_init();
+	
 	fcm = fcm_create( MAX_CHANNEL, FCM_QUEUE_SIZE );
 	if (IS_ERR_OR_NULL(fcm)){
 		return -ENOMEM;
@@ -113,7 +112,8 @@ static int __init assm_init(void)
 
 	asmm_sysfs_create();
 
-	acsm_hrtimer_init( 0L, MS_TO_NS(1000L) );
+	acsm_hrtimer_init( 0L, MS_TO_NS(1L) );
+//	acsm_hrtimer_init( 0L, MS_TO_NS(1000L) );
 	acsm_hrtimer_start();
 	
 	return 0;
@@ -133,6 +133,8 @@ static void __exit assm_exit(void)
 	asmm_sysfs_destroy();
 	
  	ret = fcm_destroy( fcm );
+
+	asc_free();
 	
  	printk( "Destroy FCM ret = %d\n", ret );
 	
