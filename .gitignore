@@ -1,4 +1,0 @@
-kernel_build/*
-!kernel_build/**/*.config
-
-tool_chain/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux/*
