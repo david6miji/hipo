@@ -1,0 +1,14 @@
+*.bak
+*.map
+*.o
+*.d
+fw/core	
+*.axf
+*.lst
+*.hex
+*.bin
+*.srec
+*.elf
+bin/
+sim/sim_atmega2560_uart
+
