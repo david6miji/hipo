@@ -1,3 +1,0 @@
-#!/bin/sh
-docker run --rm --privileged --device=/dev/ttyACM0 -v $(pwd):/app coopermaa/ino $@
-
