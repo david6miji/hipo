@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------------------
   file : base_main.c
-  desc : 
+  desc :
   auth : frog@falinux.com
   date : 2016-07 ~
   noty : linux 3.14 for imx6
@@ -63,8 +63,8 @@ static        ktime_t 	hr_timer_expiry_time;
 
 void acsm_hrtimer_start( void )
 {
-	hrtimer_start( 	
-					&hr_timer, 				// hrtimer 주소 
+	hrtimer_start(
+					&hr_timer, 				// hrtimer 주소
 					hr_timer_expiry_time, 	// 함수 호출 시점
 					HRTIMER_MODE_REL 		// 함수 호출 시점 기준
 				 );
@@ -72,39 +72,39 @@ void acsm_hrtimer_start( void )
 
 enum hrtimer_restart acsm_hrtimer_callback( struct hrtimer *timer )
 {
-	
+
 	fcm_loop( fcm );
 	acsm_hrtimer_start();
-	
+
     return HRTIMER_NORESTART;
 }
 
 void acsm_hrtimer_init( const s32 secs, const u32 nsecs )
 {
-	
+
 	hr_timer_expiry_time = ktime_set( secs, nsecs );
-	
-	hrtimer_init( 
-		&hr_timer, 			// hrtimer 주소 
-		CLOCK_MONOTONIC, 	// 대상 시간 
-		HRTIMER_MODE_REL    // 처리 시간 기준 모드 		
+
+	hrtimer_init(
+		&hr_timer, 			// hrtimer 주소
+		CLOCK_MONOTONIC, 	// 대상 시간
+		HRTIMER_MODE_REL    // 처리 시간 기준 모드
 	);
- 
+
 	hr_timer.function = &acsm_hrtimer_callback;
-	
+
 }
 
 //-----------------------------------------------------------------------------
 /** @brief   driver init
-	@remark  
+	@remark
 *///----------------------------------------------------------------------------
 static int __init assm_init(void)
 {
-	
+
 	printk( "register asmm - ac servo motor manager\n");
 
 	asc_init();
-	
+
 	fcm = fcm_create( MAX_CHANNEL, FCM_QUEUE_SIZE );
 	if (IS_ERR_OR_NULL(fcm)){
 		return -ENOMEM;
@@ -113,15 +113,16 @@ static int __init assm_init(void)
 	asmm_sysfs_create();
 
 	acsm_hrtimer_init( 0L, MS_TO_NS(1L) );
+//	acsm_hrtimer_init( 0L, MS_TO_NS(100L) );
 //	acsm_hrtimer_init( 0L, MS_TO_NS(1000L) );
 	acsm_hrtimer_start();
-	
+
 	return 0;
 }
 
 //-----------------------------------------------------------------------------
 /** @brief   driver exit
-	@remark  
+	@remark
 *///---------------------------------------------------------------------------
 static void __exit assm_exit(void)
 {
@@ -129,15 +130,15 @@ static void __exit assm_exit(void)
 
  	ret = hrtimer_cancel( &hr_timer );
  	if (ret) printk("The timer was still in use...\n");
-	
+
 	asmm_sysfs_destroy();
-	
+
  	ret = fcm_destroy( fcm );
 
 	asc_free();
-	
+
  	printk( "Destroy FCM ret = %d\n", ret );
-	
+
 }
 
 /*-----------------------------------------------------------------------------*/
