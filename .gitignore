@@ -1,3 +1,5 @@
+bootloader_build/*
+!bootloader_build/**/.config
 kernel_build/*
 !kernel_build/linux-3.14.26/.config
 
