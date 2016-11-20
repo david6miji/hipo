@@ -1,6 +1,10 @@
 bootloader_build/*
-!bootloader_build/**/.config
+!bootloader_build/**/.*.config
+
 kernel_build/*
-!kernel_build/linux-3.14.26/.config
+!kernel_build/linux-3.14.26/.*.config
+
+filesystem_build/*
+!filesystem_build/**/.*.config
 
 tool_chain/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux/*
